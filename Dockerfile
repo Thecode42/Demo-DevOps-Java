@@ -9,7 +9,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
-COPY --from=build /app/target/*.jar applicacion.jar
+COPY --from=build /app/target/*.jar application.jar
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "applicacion.jar"]
+ENTRYPOINT ["java", "-jar", "application.jar"]
