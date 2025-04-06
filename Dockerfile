@@ -8,8 +8,9 @@ RUN mvn clean package -DskipTests
 # Etapa de creacion de imagen con JDK 17
 FROM eclipse-temurin:17-jdk-alpine
 
+RUN apk add --no-cache curl
 WORKDIR /app
 COPY --from=build /app/target/*.jar application.jar
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT ["java", "-jar", "application.jar"]
