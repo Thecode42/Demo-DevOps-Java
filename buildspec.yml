@@ -1,5 +1,11 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-2"
+  parameter-store:
+    AWS_ACCOUNT_ID: "MY_ACCOUNT_ID"
+
 phases:
   install:
     runtime-versions:
@@ -7,11 +13,6 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - mvn --version
-  env:
-  variables:
-    AWS_DEFAULT_REGION: "us-east-2"
-  parameter-store:
-    AWS_ACCOUNT_ID: "MY_ACCOUNT_ID"
   pre_build:
     commands:
       - echo "Cleaning and installing..."
