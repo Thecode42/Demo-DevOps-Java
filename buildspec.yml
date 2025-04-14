@@ -4,17 +4,10 @@ phases:
   install:
     runtime-versions:
       java: corretto17
-      maven: 3.9
     commands:
       - echo "Installing dependencies..."
+      - mvn --version
   pre_build:
     commands:
       - echo "Cleaning and installing..."
-      - mvn clean install
-      - echo "Logging in to Amazon ECR..."
-      - aws --version
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - IMAGE_REPO_NAME=test/devops
-      - ECR_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
-      - IMAGE_TAG=build-$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "Tag image with tag $IMAGE_TAG"
+      - mvn clean
