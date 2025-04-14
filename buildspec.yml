@@ -7,10 +7,15 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - mvn --version
+  env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-2"
+  parameter-store:
+    AWS_ACCOUNT_ID: "MY_ACCOUNT_ID"
   pre_build:
     commands:
       - echo "Cleaning and installing..."
-      - mvn clean install
+      - mvn clean
       - echo "Logging in to Amazon ECR..."
       - aws --version
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
