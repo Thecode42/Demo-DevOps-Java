@@ -37,3 +37,8 @@ phases:
       - echo "Pushing Docker image to ECR..."
       - docker push $ECR_REPO_URI:latest
       - docker push $ECR_REPO_URI:$IMAGE_TAG
+      - echo "Saving image variable..."
+      - printf '{"ImageURI":"%s"}' "$ECR_REPO_URI:$IMAGE_TAG" > imageDetail.json
+      - cat imageDetail.json
+artifacts:
+  files: imageDetail.json
