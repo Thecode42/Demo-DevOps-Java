@@ -7,16 +7,41 @@ variables:
 pool:
   vmImage: ubuntu-latest
 
-jobs:
-  - job: Build_Java
-    displayName: "Compilar proyecto Java"
-    steps:
-    - task: Maven@3
-      inputs:
-        mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.7'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: false
-        goals: 'package'
+stages:
+  - stage: Build
+    displayName: "Compilar Java y crear artefacto"
+    jobs:
+      - job: Build_Java
+        displayName: "Compilar proyecto Java"
+        steps:
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            mavenOptions: '-Xmx3072m'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.7'
+            jdkArchitectureOption: 'x64'
+            publishJUnitResults: false
+            goals: 'package'
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: '$(Build.SourcesDirectory)'
+            Contents: '**/*.jar'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+            CleanTargetFolder: true
+            preserveTimestamp: true
+        - task: Docker@2
+          displayName: "Login a Azure Container Registry"
+          inputs:
+            command: login
+            containerRegistry: $(acrServiceConnection)
+        - task: Docker@2
+          displayName: "Build y push de la imagen Docker"
+          inputs:
+            command: buildAndPush
+            repository: $(dockerImageName)
+            dockerfile: $(dockerfilePath)
+            containerRegistry: $(acrServiceConnection)
+            tags: |
+              latest
+              $(Build.BuildId)
