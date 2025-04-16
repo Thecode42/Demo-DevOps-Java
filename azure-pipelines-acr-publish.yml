@@ -30,26 +30,18 @@ stages:
             TargetFolder: '$(Build.ArtifactStagingDirectory)'
             CleanTargetFolder: true
             preserveTimestamp: true
-  - stage: Build_and_Push_Docker
-    displayName: "Construir y subir imagen Docker"
-    dependsOn: Build
-    jobs:
-      - job: Docker
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: Docker@2
-            displayName: "Login a Azure Container Registry"
-            inputs:
-              command: login
-              containerRegistry: $(acrServiceConnection)
-          - task: Docker@2
-            displayName: "Build y push de la imagen Docker"
-            inputs:
-              command: buildAndPush
-              repository: $(dockerImageName)
-              dockerfile: $(dockerfilePath)
-              containerRegistry: $(acrServiceConnection)
-              tags: |
-                latest
-                $(Build.BuildId)
+        - task: Docker@2
+          displayName: "Login a Azure Container Registry"
+          inputs:
+            command: login
+            containerRegistry: $(acrServiceConnection)
+        - task: Docker@2
+          displayName: "Build y push de la imagen Docker"
+          inputs:
+            command: buildAndPush
+            repository: $(dockerImageName)
+            dockerfile: $(dockerfilePath)
+            containerRegistry: $(acrServiceConnection)
+            tags: |
+              latest
+              $(Build.BuildId)
